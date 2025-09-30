@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Nilakshan Raveendran | Portfolio",
     description: "Projects, skills, and ways to contact Nilakshan.",
-    url: "https://your-domain.com",
+    url: "https://nix-portfolio.vercel.app",
     siteName: "Nilakshan Portfolio",
     images: [
       { url: "/og-image.png", width: 1200, height: 630, alt: "Nilakshan Portfolio" },
