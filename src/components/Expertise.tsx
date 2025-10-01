@@ -64,7 +64,7 @@ const items = [
 
 export default function Expertise() {
   return (
-    <Section className="bg-white rounded-2xl" id="expertise">
+    <Section className="bg-white dark:bg-zinc-900 rounded-2xl" id="expertise">
       <div className="text-center">
         <h2 className="text-3xl font-bold tracking-tight">
           Expertise Across Leading

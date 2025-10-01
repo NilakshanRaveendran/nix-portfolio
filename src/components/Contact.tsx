@@ -2,7 +2,7 @@ import Section from "./Section";
 
 export default function Contact() {
   return (
-    <Section id="contact" title="Contact" className="bg-white rounded-2xl">
+    <Section id="contact" title="Contact" className="bg-white dark:bg-zinc-900 rounded-2xl">
       <div className="max-w-6xl">
         <h3 className="text-xl sm:text-2xl font-bold tracking-tight">Nilakshan Raveendran</h3>
         <p className="mt-2 font-medium opacity-90">

@@ -14,7 +14,7 @@ export default function Hero() {
             className="object-cover rounded-full ring-4 ring-white/70"
             priority
           />
-          <span className="absolute -right-6 top-4 select-none rounded-full bg-white/95 text-xs px-3 py-1 shadow">
+          <span className="absolute -right-6 top-4 select-none rounded-full bg-white/95 text-black text-xs px-3 py-1 shadow">
             Hi <span className="wave-emoji">👋</span>
           </span>
         </div>

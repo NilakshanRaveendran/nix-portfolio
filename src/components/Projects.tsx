@@ -1,7 +1,7 @@
 "use client";
 import Section from "./Section";
 import Image, { type StaticImageData } from "next/image";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import chtgpt from "../../asserts/chtgpt.png";
 import mobileImg from "../../asserts/mobile.png";
 import smsImg from "../../asserts/sms.png";
@@ -96,7 +96,7 @@ const projects: Project[] = [
 
 function TextCard({ p }: { p: Project }) {
   return (
-    <div className="relative rounded-2xl bg-white p-6 border border-black/5 dark:border-white/10 shadow-sm">
+    <div className="relative rounded-2xl bg-white dark:bg-zinc-900 p-6 border border-black/5 dark:border-white/10 shadow-sm">
       <span className="absolute -top-3 left-4 select-none rounded-full bg-black/80 text-white text-[11px] px-2 py-0.5">
         Details
       </span>
@@ -140,11 +140,16 @@ function TextCard({ p }: { p: Project }) {
   );
 }
 
-function ImageCard({ project }: { project: Project }) {
+function ImageCard({ project, onOpen }: { project: Project; onOpen?: (p: Project) => void }) {
   const src = project.image ?? "/placeholder.svg";
   return (
-    <div className="rounded-2xl bg-white p-2 border border-black/5 dark:border-white/10 shadow-sm">
-      <div className="relative aspect-video rounded-xl overflow-hidden group">
+    <div className="rounded-2xl bg-white dark:bg-zinc-900 p-2 border border-black/5 dark:border-white/10 shadow-sm">
+      <button
+        type="button"
+        onClick={() => onOpen?.(project)}
+        className="relative aspect-video rounded-xl overflow-hidden group w-full text-left"
+        aria-label={`Open preview for ${project.title}`}
+      >
         <Image
           src={src}
           alt={`Preview for ${project.title}`}
@@ -160,13 +165,40 @@ function ImageCard({ project }: { project: Project }) {
             {project.title}
           </div>
         </div>
-      </div>
+      </button>
     </div>
   );
 }
 
 export default function Projects() {
   const [showAll, setShowAll] = useState(false);
+  const [preview, setPreview] = useState<Project | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isEntering, setIsEntering] = useState(false);
+
+  const openPreview = (p: Project) => {
+    setPreview(p);
+    setIsClosing(false);
+    setIsEntering(true);
+    // allow next paint then animate to visible
+    setTimeout(() => setIsEntering(false), 20);
+  };
+
+  const closePreview = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setPreview(null);
+      setIsClosing(false);
+      setIsEntering(false);
+    }, 200);
+  };
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closePreview();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
   const initialCount = 2; // number of projects to show before expanding
   const visible = showAll ? projects : projects.slice(0, initialCount);
   const hidden = showAll ? [] : projects.slice(visible.length);
@@ -187,7 +219,7 @@ export default function Projects() {
       {/* Group each project's details + preview in a single component */}
       <div className="space-y-8">
         {visible.map((p, idx) => (
-          <ProjectItem key={p.title} project={p} index={idx} />
+          <ProjectItem key={p.title} project={p} index={idx} onOpen={openPreview} />
         ))}
       </div>
       {!showAll && hidden.length > 0 && (
@@ -196,9 +228,10 @@ export default function Projects() {
           <div className="overflow-x-auto">
             <div className="flex gap-3 px-2 min-w-max justify-center">
               {hidden.map((p) => (
-                <div
+                <button
                   key={p.title}
-                  className="w-32 shrink-0 rounded-lg bg-white border border-black/5 dark:border-white/10 hover:shadow-sm transition-shadow"
+                  onClick={() => openPreview(p)}
+                  className="w-32 shrink-0 rounded-lg bg-white dark:bg-zinc-900 border border-black/5 dark:border-white/10 hover:shadow-sm transition-shadow text-left"
                 >
                   <div className="relative aspect-video rounded-t-lg overflow-hidden">
                     <Image
@@ -212,7 +245,7 @@ export default function Projects() {
                   <div className="p-1.5">
                     <div className="text-[11px] leading-4 font-medium line-clamp-2">{p.title}</div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -228,15 +261,48 @@ export default function Projects() {
           </button>
         </div>
       )}
+      {/* Modal Preview (image only) */}
+      {preview && (
+        <div
+          className={`fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 transition-opacity duration-200 ${
+            isClosing || isEntering ? "opacity-0" : "opacity-100"
+          }`}
+          role="dialog"
+          aria-modal
+          onClick={closePreview}
+        >
+          <div
+            className={`relative w-[90vw] md:w-[80vw] h-[50vh] md:h-[80vh] transform transition-transform duration-200 ${
+              isClosing || isEntering ? "scale-95" : "scale-100"
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="absolute inset-0 rounded-3xl overflow-hidden">
+              <Image
+                src={preview.image ?? "/placeholder.svg"}
+                alt={preview.title}
+                fill
+                sizes="80vw"
+                className="object-contain rounded-3xl"
+              />
+            </div>
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 md:top-3 pointer-events-none">
+              <span className="inline-block rounded-lg bg-black/70 text-white text-xs sm:text-sm px-3 py-1 leading-none text-center max-w-[90vw] md:max-w-[70vw]">
+                {preview.title}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </Section>
   );
 }
 
-function ProjectItem({ project }: { project: Project; index: number }) {
+function ProjectItem({ project, onOpen }: { project: Project; index: number; onOpen?: (p: Project) => void }) {
   return (
     <div className="grid lg:grid-cols-2 gap-6 items-stretch">
       <TextCard p={project} />
-      <ImageCard project={project} />
+      <ImageCard project={project} onOpen={onOpen} />
     </div>
   );
 }
