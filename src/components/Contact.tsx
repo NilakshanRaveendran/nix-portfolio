@@ -6,7 +6,7 @@ export default function Contact() {
       <div className="max-w-6xl">
         <h3 className="text-xl sm:text-2xl font-bold tracking-tight">Nilakshan Raveendran</h3>
         <p className="mt-2 font-medium opacity-90">
-          Computer Engineering Undergraduate - Department of Computer Science & Informatics, Uva Wellassa University
+          Computer Science Undergraduate - Department of Computer Science & Informatics, Uva Wellassa University
         </p>
         <div className="mt-3 space-y-3 opacity-90">
           <p>
