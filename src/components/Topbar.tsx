@@ -11,7 +11,7 @@ export default function Topbar() {
           </span>
           <a
             href="cv.pdf"
-            download="Nilakshan_Raveendran-Ai-CV.pdf"
+            download="Nilakshan_Raveendran-CV.pdf"
             className="rounded-full border border-black/10 dark:border-white/15 px-3 py-1 hover:bg-black/5 dark:hover:bg-white/10"
           >
             CV
