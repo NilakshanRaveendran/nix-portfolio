@@ -1,7 +1,7 @@
 "use client";
 import Section from "./Section";
 import Image, { type StaticImageData } from "next/image";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import chtgpt from "../../asserts/chtgpt.png";
 import mobileImg from "../../asserts/mobile.png";
 import smsImg from "../../asserts/sms.png";
