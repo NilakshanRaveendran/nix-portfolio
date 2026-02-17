@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Lexend } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const lexend = Lexend({
@@ -45,7 +46,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${lexend.variable} antialiased`}>{children}</body>
+      <body className={`${lexend.variable} antialiased`}>
+        {children}
+        <SpeedInsights />
+      </body>
     </html>
   );
 }
